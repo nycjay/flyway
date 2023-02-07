@@ -27,6 +27,7 @@ flyway.password=mySecretPwd
 flyway.connectRetries=10
 flyway.initSql=SET ROLE 'myuser'
 flyway.defaultSchema=schema1
+flyway.defaultCatalogs=catalog1
 flyway.schemas=schema1,schema2,schema3
 flyway.createSchemas=true
 flyway.table=schema_history

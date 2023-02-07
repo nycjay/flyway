@@ -88,6 +88,7 @@ public class FlywayModel {
     private List<String> loggers;
     private Map<String, String> placeholders;
     private String defaultSchema;
+    private String defaultCatalog;
     private Map<String, PropertyResolver> propertyResolvers;
 
     public static FlywayModel defaults(){
@@ -199,6 +200,7 @@ public class FlywayModel {
         result.failOnMissingLocations = failOnMissingLocations.merge(otherPojo.failOnMissingLocations);
         result.loggers = loggers.merge(otherPojo.loggers);
         result.defaultSchema = defaultSchema.merge(otherPojo.defaultSchema);
+        result.defaultCatalog = defaultCatalog.merge(otherPojo.defaultCatalog);
         result.placeholders = placeholders.merge(otherPojo.placeholders);
         result.propertyResolvers = MergeUtils.merge(propertyResolvers, otherPojo.propertyResolvers, (a,b) -> b != null ? b : a); // TODO: more granular merge
         return result;

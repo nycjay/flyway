@@ -137,6 +137,17 @@ public abstract class AbstractFlywayTask extends DefaultTask {
     public String defaultSchema;
 
     /**
+     * The default catalog managed by Flyway. This catalog name is case-sensitive.
+     * <p>Consequences:</p>
+     * <ul>
+     * <li>This catalog will be the one containing the schema history table.</li>
+     * <li>This catalog will be the default for the database connection (provided the database supports this concept).</li>
+     * </ul>
+     * <p>Also configurable with Gradle or System Property: ${flyway.defaultCatalog}</p>
+     */
+    public String defaultCatalog;
+
+    /**
      * Whether Flyway should attempt to create the schemas specified in the <i>schemas</i> property.
      */
     public Boolean createSchemas;
@@ -740,6 +751,7 @@ public abstract class AbstractFlywayTask extends DefaultTask {
         putIfSet(conf, ConfigUtils.SKIP_DEFAULT_RESOLVERS, skipDefaultResolvers, extension.skipDefaultResolvers);
         putIfSet(conf, ConfigUtils.SKIP_DEFAULT_CALLBACKS, skipDefaultCallbacks, extension.skipDefaultCallbacks);
         putIfSet(conf, ConfigUtils.DEFAULT_SCHEMA, defaultSchema, extension.defaultSchema);
+        putIfSet(conf, ConfigUtils.DEFAULT_CATALOG, defaultCatalog, extension.defaultCatalog);
         putIfSet(conf, ConfigUtils.CREATE_SCHEMAS, createSchemas, extension.createSchemas);
         putIfSet(conf, ConfigUtils.FAIL_ON_MISSING_LOCATIONS, failOnMissingLocations, extension.failOnMissingLocations);
 

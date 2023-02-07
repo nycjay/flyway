@@ -322,6 +322,18 @@ public interface Configuration {
     String getDefaultSchema();
 
     /**
+     * The default catalog managed by Flyway. This catalog name is case-sensitive.
+     * <p>Consequences:</p>
+     * <ul>
+     * <li>This catalog will be the one containing the schema history table.</li>
+     * <li>This catalog will be the default for the database connection (provided the database supports this concept).</li>
+     * </ul>
+     *
+     * @return The default catalog managed by Flyway, which is where the schema history table will reside.
+     */
+    String getDefaultCatalog();
+
+    /**
      * The schemas managed by Flyway. These schema names are case-sensitive. If not specified, Flyway uses
      * the default schema for the database connection. If <i>defaultSchema</i> is not specified, then the first of
      * this list also acts as the default schema.

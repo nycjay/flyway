@@ -80,8 +80,16 @@ public class ClassicConfiguration implements Configuration {
         getModernFlyway().setDefaultSchema(defaultSchema);
     }
 
+    public void setDefaultCatalog(String defaultCatalog) {
+        getModernFlyway().setDefaultCatalog(defaultCatalog);
+    }
+
     public String getDefaultSchema() {
         return getModernFlyway().getDefaultSchema();
+    }
+
+    public String getDefaultCatalog() {
+        return getModernFlyway().getDefaultCatalog();
     }
 
     private EnvironmentResolver environmentResolver;
@@ -1527,6 +1535,10 @@ public class ClassicConfiguration implements Configuration {
         String defaultSchemaProp = props.remove(ConfigUtils.DEFAULT_SCHEMA);
         if (defaultSchemaProp != null) {
             setDefaultSchema(defaultSchemaProp);
+        }
+        String defaultCatalogProp = props.remove(ConfigUtils.DEFAULT_CATALOG);
+        if (defaultCatalogProp != null) {
+            setDefaultCatalog(defaultCatalogProp);
         }
         String schemasProp = props.remove(ConfigUtils.SCHEMAS);
         if (schemasProp != null) {
