@@ -50,6 +50,7 @@ public class ConfigUtils {
     public static final String CONNECT_RETRIES = "flyway.connectRetries";
     public static final String CONNECT_RETRIES_INTERVAL = "flyway.connectRetriesInterval";
     public static final String DEFAULT_SCHEMA = "flyway.defaultSchema";
+    public static final String DEFAULT_CATALOG = "flyway.defaultCatalog";
     public static final String DRIVER = "flyway.driver";
     public static final String DRYRUN_OUTPUT = "flyway.dryRunOutput";
     public static final String ENCODING = "flyway.encoding";
@@ -176,6 +177,10 @@ public class ConfigUtils {
 
         if ("FLYWAY_DEFAULT_SCHEMA".equals(key)) {
             return DEFAULT_SCHEMA;
+        }
+
+        if ("FLYWAY_DEFAULT_CATALOG".equals(key)) {
+            return DEFAULT_CATALOG;
         }
         if ("FLYWAY_DRIVER".equals(key)) {
             return DRIVER;

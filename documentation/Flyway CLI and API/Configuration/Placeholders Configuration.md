@@ -36,6 +36,7 @@ See [parameters](Configuration/parameters/#placeholders) for placeholder specifi
 Flyway also provides default placeholders, whose values are automatically populated:
 
 - `${flyway:defaultSchema}` = The default schema for Flyway
+- `${flyway:defaultCatalog}` = The default catalog for Flyway
 - `${flyway:user}` = The user Flyway will use to connect to the database
 - `${flyway:database}` = The name of the database from the connection url
 - `${flyway:timestamp}` = The time that Flyway parsed the script, formatted as 'yyyy-MM-dd HH:mm:ss'
