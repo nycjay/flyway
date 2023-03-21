@@ -33,7 +33,6 @@ public abstract class Connection<D extends Database> implements Closeable {
 
     protected Connection(D database, java.sql.Connection connection) {
         this.database = database;
-
         try {
             this.originalAutoCommit = connection.getAutoCommit();
             if (!originalAutoCommit) {

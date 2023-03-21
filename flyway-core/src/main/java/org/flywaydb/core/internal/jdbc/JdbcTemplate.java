@@ -30,10 +30,13 @@ import java.util.Map;
  */
 public class JdbcTemplate {
     protected final Connection connection;
+
     /**
      * The type to assign to a null value.
      */
     protected final int nullType;
+    protected final boolean supportsEscapeProcessing;
+    protected final boolean supportsResultsExtraction;
 
     public JdbcTemplate(Connection connection) {
         this(connection, DatabaseTypeRegister.getDatabaseTypeForConnection(connection));
@@ -42,6 +45,9 @@ public class JdbcTemplate {
     public JdbcTemplate(Connection connection, DatabaseType databaseType) {
         this.connection = connection;
         this.nullType = databaseType.getNullType();
+        this.supportsEscapeProcessing = databaseType.supportsEscapeProcessing();
+        this.supportsResultsExtraction = databaseType.supportsResultsExtraction();
+
     }
 
     public Connection getConnection() {
@@ -196,7 +202,9 @@ public class JdbcTemplate {
         Statement statement = null;
         try {
             statement = connection.createStatement();
-            statement.setEscapeProcessing(false);
+            if (this.supportsEscapeProcessing) {
+                statement.setEscapeProcessing(true);
+            }
 
             boolean hasResults = statement.execute(sql);
             extractResults(results, statement, sql, hasResults);
@@ -243,7 +251,8 @@ public class JdbcTemplate {
     private void extractResults(Results results, Statement statement, String sql, boolean hasResults) throws SQLException {
         // retrieve all results to ensure all errors are detected
         int updateCount = -1;
-        while (hasResults || (updateCount = statement.getUpdateCount()) != -1) {
+        boolean keepLooping = true;
+        while (keepLooping && (hasResults || (updateCount = statement.getUpdateCount()) != -1 )) {
             List<String> columns = null;
             List<List<String>> data = null;
             if (hasResults) {
@@ -265,9 +274,13 @@ public class JdbcTemplate {
                         data.add(row);
                     }
                 }
+                //System.out.println("adding results from sql: " + sql);
             }
             results.addResult(new Result(updateCount, columns, data, sql));
             hasResults = statement.getMoreResults();
+            if(!hasResults && !this.supportsResultsExtraction) {
+                keepLooping = false;
+            }
         }
     }
 
