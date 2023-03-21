@@ -248,4 +248,12 @@ public abstract class BaseDatabaseType implements DatabaseType {
     }
 
     public void printMessages() {}
+
+    public boolean supportsEscapeProcessing() {
+        return true;
+    }
+
+    public boolean supportsResultsExtraction() {
+        return true;
+    }
 }

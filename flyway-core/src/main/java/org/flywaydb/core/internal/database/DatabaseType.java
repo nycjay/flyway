@@ -252,4 +252,9 @@ public interface DatabaseType extends Plugin {
     String instantiateClassExtendedErrorMessage();
 
     void printMessages();
+
+    boolean supportsEscapeProcessing();
+
+    boolean supportsResultsExtraction();
+
 }

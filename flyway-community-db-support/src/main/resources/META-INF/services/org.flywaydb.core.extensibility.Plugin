@@ -3,3 +3,4 @@ org.flywaydb.community.database.mysql.tidb.TiDBDatabaseType
 org.flywaydb.community.database.yugabytedb.YugabyteDBDatabaseType
 org.flywaydb.community.database.CommunityDatabaseExtension
 org.flywaydb.community.database.databricks.DatabricksDatabaseType
+org.flywaydb.community.database.phoenixqueryserver.PhoenixQueryServerDatabaseType
