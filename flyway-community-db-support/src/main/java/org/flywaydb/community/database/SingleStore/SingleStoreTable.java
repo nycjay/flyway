@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.flywaydb.community.database.SingleStore;
 
-package org.flywaydb.community.database.phoenixqueryserver;
 import org.flywaydb.core.api.logging.Log;
 import org.flywaydb.core.api.logging.LogFactory;
 import org.flywaydb.core.internal.database.base.Table;
@@ -22,37 +22,29 @@ import org.flywaydb.core.internal.jdbc.JdbcTemplate;
 
 import java.sql.SQLException;
 
-public class PhoenixQueryServerTable extends Table<PhoenixQueryServerDatabase, PhoenixQueryServerSchema> {
-    private static final Log LOG = LogFactory.getLog(PhoenixQueryServerTable.class);
+public class SingleStoreTable extends Table<SingleStoreDatabase, SingleStoreSchema> {
 
-    /**
-     * @param jdbcTemplate The JDBC template for communicating with the DB.
-     * @param database     The database-specific support.
-     * @param schema       The schema this table lives in.
-     * @param name         The name of the table.
-     */
-    public PhoenixQueryServerTable(JdbcTemplate jdbcTemplate, PhoenixQueryServerDatabase database, PhoenixQueryServerSchema schema, String name) {
+    private static final Log LOG = LogFactory.getLog(SingleStoreTable.class);
+    SingleStoreTable(JdbcTemplate jdbcTemplate, SingleStoreDatabase database, SingleStoreSchema schema, String name) {
         super(jdbcTemplate, database, schema, name);
     }
 
     @Override
     protected void doDrop() throws SQLException {
-        jdbcTemplate.execute("DROP TABLE IF EXISTS " + database.quote(schema.getName(), name) + ";");
+        jdbcTemplate.execute("DROP TABLE " + database.quote(schema.getName(), name));
     }
 
     @Override
     protected boolean doExists() throws SQLException {
-        return exists(null, schema, name);
+        return exists(schema, null, name);
     }
 
     @Override
     protected void doLock() throws SQLException {
-        LOG.debug("Unable to lock " + this + " as Phoenix does not support locking. No concurrent migration supported.");
+        if (jdbcTemplate.queryForString("select storage_type from information_schema.tables where table_schema=? and table_name=?", schema.getName(), name).equals("COLUMNSTORE")) {
+            LOG.warn("Taking lock on columnstore table is not supported by SingleStoreDB");
+        } else {
+            jdbcTemplate.execute("SELECT * FROM " + this + " FOR UPDATE");
+        }
     }
-
-    @Override
-    protected void doUnlock() throws SQLException {
-        LOG.debug("Unable to unlock " + this + " as Phoenix does not support locking. No concurrent migration supported.");
-    }
-
 }

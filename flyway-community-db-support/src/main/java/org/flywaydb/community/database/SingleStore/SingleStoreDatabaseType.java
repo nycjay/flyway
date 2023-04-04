@@ -13,26 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.flywaydb.community.database.phoenixqueryserver;
+package org.flywaydb.community.database.SingleStore;
 
 import org.flywaydb.core.api.ResourceProvider;
 import org.flywaydb.core.api.configuration.Configuration;
 import org.flywaydb.core.internal.database.base.BaseDatabaseType;
 import org.flywaydb.core.internal.database.base.Database;
 import org.flywaydb.core.internal.jdbc.JdbcConnectionFactory;
+import org.flywaydb.core.internal.jdbc.JdbcUtils;
 import org.flywaydb.core.internal.jdbc.StatementInterceptor;
 import org.flywaydb.core.internal.parser.Parser;
 import org.flywaydb.core.internal.parser.ParsingContext;
 
 import java.sql.Connection;
 import java.sql.Types;
+import java.util.Arrays;
 
-public class PhoenixQueryServerDatabaseType extends BaseDatabaseType {
-    private static final String PHOENIX_QUERY_SERVER_THIN_CLIENT_JDBC_DRIVER = "org.apache.phoenix.queryserver.client.Driver";
+public class SingleStoreDatabaseType extends BaseDatabaseType {
     @Override
     public String getName() {
-        return "phoenix";
+        return "SingleStoreDB";
     }
 
     @Override
@@ -42,40 +42,36 @@ public class PhoenixQueryServerDatabaseType extends BaseDatabaseType {
 
     @Override
     public boolean handlesJDBCUrl(String url) {
-        return url.startsWith("jdbc:phoenix:thin:");
+        return url.startsWith("jdbc:singlestore:") || url.startsWith("jdbc:p6spy:singlestore:") || url.startsWith("jdbc:mysql:");
     }
 
     @Override
     public String getDriverClass(String url, ClassLoader classLoader) {
-        return PHOENIX_QUERY_SERVER_THIN_CLIENT_JDBC_DRIVER;
+        if (url.startsWith("jdbc:p6spy:singlestore:")) {
+            return "com.p6spy.engine.spy.P6SpyDriver";
+        } else if(url.startsWith("jdbc:mysql:")){
+            return "org.mariadb.jdbc.Driver";
+        }
+        return "com.singlestore.jdbc.Driver";
     }
 
     @Override
     public boolean handlesDatabaseProductNameAndVersion(String databaseProductName, String databaseProductVersion, Connection connection) {
-        if (databaseProductName.toLowerCase().contains("phoenix".toLowerCase())) {
-            return true;
-        }
-        return false;
+        return (databaseProductName.contains("SingleStore") || (databaseProductName.contains("MySQL") && JdbcUtils.getCatalog(connection).contains("memsql")));
     }
 
     @Override
     public Database createDatabase(Configuration configuration, JdbcConnectionFactory jdbcConnectionFactory, StatementInterceptor statementInterceptor) {
-        return new PhoenixQueryServerDatabase(configuration, jdbcConnectionFactory, statementInterceptor);
+        return new SingleStoreDatabase(configuration, jdbcConnectionFactory, statementInterceptor);
     }
 
     @Override
     public Parser createParser(Configuration configuration, ResourceProvider resourceProvider, ParsingContext parsingContext) {
-        return new PhoenixQueryServerParser(configuration, parsingContext);
+        return new SingleStoreParser(configuration, parsingContext);
     }
 
     @Override
-    public boolean supportsEscapeProcessing() {
-        return false;
+    public String instantiateClassExtendedErrorMessage() {
+        return "Failure probably due to inability to load dependencies. Please ensure you have downloaded 'https://mvnrepository.com/artifact/com.singlestore/singlestore-jdbc-client' and extracted to 'flyway/drivers' folder";
     }
-
-    @Override
-    public boolean supportsResultsExtraction() {
-        return false;
-    }
-
 }

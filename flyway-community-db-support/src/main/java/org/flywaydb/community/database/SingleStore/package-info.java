@@ -13,15 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.flywaydb.community.database.databricks;
-
-import org.flywaydb.core.api.configuration.Configuration;
-import org.flywaydb.core.internal.parser.Parser;
-import org.flywaydb.core.internal.parser.ParsingContext;
-
-public class DatabricksParser extends Parser {
-    protected DatabricksParser(Configuration configuration, ParsingContext parsingContext) {
-        super(configuration, parsingContext, 3);
-    }
-}
+package org.flywaydb.community.database.SingleStore;
