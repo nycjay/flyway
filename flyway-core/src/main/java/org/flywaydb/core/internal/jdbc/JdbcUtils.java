@@ -27,6 +27,8 @@ import org.flywaydb.core.internal.util.FlywayDbWebsiteLinks;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @CustomLog
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -169,5 +171,29 @@ public class JdbcUtils {
         } catch (SQLException e) {
             throw new FlywaySqlException("Error while determining database product version", e);
         }
+    }
+
+    /**
+     * Retrieves the databases from the Server as a list
+     *
+     * @param connection The connection to use to query the database.
+     * @return List of Databases present
+     */
+    public static List<String> getCatalog(Connection connection) {
+        List<String> dblist;
+        try {
+            DatabaseMetaData databaseMetaData = connection.getMetaData();
+            dblist = new ArrayList();
+            if (databaseMetaData == null) {
+                throw new FlywayException("Unable to read database metadata while it is null!");
+            }
+            ResultSet catalog = databaseMetaData.getCatalogs();
+            while (catalog.next()) {
+                dblist.add(catalog.getString(1));
+            }
+        } catch (SQLException e) {
+            throw new FlywayException("Error while determining JDBC driver name", e);
+        }
+        return dblist;
     }
 }
