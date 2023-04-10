@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.flywaydb.community.database.SingleStore;
+package org.flywaydb.community.database.MemSQL;
 
 import org.flywaydb.core.api.configuration.Configuration;
+import org.flywaydb.core.api.logging.Log;
+import org.flywaydb.core.api.logging.LogFactory;
 import org.flywaydb.core.internal.database.base.Database;
 import org.flywaydb.core.internal.database.base.Table;
 import org.flywaydb.core.internal.jdbc.JdbcConnectionFactory;
@@ -24,8 +26,10 @@ import org.flywaydb.core.internal.jdbc.StatementInterceptor;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class SingleStoreDatabase extends Database<SingleStoreConnection> {
-    public SingleStoreDatabase(Configuration configuration, JdbcConnectionFactory jdbcConnectionFactory, StatementInterceptor statementInterceptor) {
+public class MemSQLDatabase extends Database<MemSQLConnection> {
+
+    private static final Log LOG = LogFactory.getLog(MemSQLDatabase.class);
+    public MemSQLDatabase(Configuration configuration, JdbcConnectionFactory jdbcConnectionFactory, StatementInterceptor statementInterceptor) {
         super(configuration, jdbcConnectionFactory, statementInterceptor);
     }
 
@@ -50,8 +54,9 @@ public class SingleStoreDatabase extends Database<SingleStoreConnection> {
     }
 
     @Override
-    protected SingleStoreConnection doGetConnection(Connection connection) {
-        return new SingleStoreConnection(this, connection);
+    protected MemSQLConnection doGetConnection(Connection connection) {
+        LOG.info("Creating MemSQL connection.");
+        return new MemSQLConnection(this, connection);
     }
 
     @Override
@@ -91,6 +96,10 @@ public class SingleStoreDatabase extends Database<SingleStoreConnection> {
 
     @Override
     public boolean catalogIsSchema() {
+        return true;
+    }
+    @Override
+    public boolean useSingleConnection() {
         return true;
     }
 }

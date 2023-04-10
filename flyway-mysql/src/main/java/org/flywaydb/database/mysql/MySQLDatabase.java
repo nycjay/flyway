@@ -181,6 +181,7 @@ public class MySQLDatabase extends Database<MySQLConnection> {
 
     @Override
     protected MySQLConnection doGetConnection(Connection connection) {
+        LOG.info("Getting MySQL database connection");
         return new MySQLConnection(this, connection);
     }
 
@@ -243,34 +244,19 @@ public class MySQLDatabase extends Database<MySQLConnection> {
 
     @Override
     public final void ensureSupported() {
-        if (databaseType.getName().equals("TiDB")) {
+        /*if (databaseType.getName().equals("TiDB")) {
             ensureDatabaseIsRecentEnough("5.0");
             recommendFlywayUpgradeIfNecessary("5.0");
             return;
         }
         ensureDatabaseIsRecentEnough("5.1");
         if (databaseType instanceof MariaDBDatabaseType) {
-
             ensureDatabaseNotOlderThanOtherwiseRecommendUpgradeToFlywayEdition("10.3", org.flywaydb.core.internal.license.Edition.ENTERPRISE);
-
             recommendFlywayUpgradeIfNecessary("10.10");
         } else {
-
             ensureDatabaseNotOlderThanOtherwiseRecommendUpgradeToFlywayEdition("8.0", org.flywaydb.core.internal.license.Edition.ENTERPRISE);
-
-
-
-
-
-
-
-
-
-
-
-
             recommendFlywayUpgradeIfNecessary("8.0");
-        }
+        }*/
     }
 
     @Override

@@ -727,6 +727,7 @@
                                     <descriptors>
                                         <descriptor>src/main/assembly/linux.xml</descriptor>
                                     </descriptors>
+                                    <tarLongFileMode>posix</tarLongFileMode>
                                 </configuration>
                             </execution>
                         </executions>

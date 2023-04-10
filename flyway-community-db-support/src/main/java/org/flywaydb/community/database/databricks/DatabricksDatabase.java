@@ -32,11 +32,6 @@ public class DatabricksDatabase extends Database<DatabricksConnection> {
     }
 
     @Override
-    protected String doGetCatalog() throws SQLException {
-        return super.doGetCatalog();
-    }
-
-    @Override
     protected DatabricksConnection doGetConnection(Connection connection) {
         return new DatabricksConnection(this, connection);
     }
@@ -103,7 +98,7 @@ public class DatabricksDatabase extends Database<DatabricksConnection> {
 
     @Override
     public String getRawCreateScript(Table table, boolean baseline) {
-        String sql = "CREATE TABLE " + table + " (\n" +
+        String sql = "CREATE TABLE IF NOT EXISTS " + table + " (\n" +
                 "    `installed_rank` INT NOT NULL,\n" +
                 "    `version` STRING,\n" +
                 "    `description` STRING NOT NULL,\n" +

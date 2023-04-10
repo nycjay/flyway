@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.flywaydb.community.database.SingleStore;
+package org.flywaydb.community.database.MemSQL;
 
 import org.flywaydb.core.api.logging.Log;
 import org.flywaydb.core.api.logging.LogFactory;
@@ -22,10 +22,10 @@ import org.flywaydb.core.internal.jdbc.JdbcTemplate;
 
 import java.sql.SQLException;
 
-public class SingleStoreTable extends Table<SingleStoreDatabase, SingleStoreSchema> {
+public class MemSQLTable extends Table<MemSQLDatabase, MemSQLSchema> {
 
-    private static final Log LOG = LogFactory.getLog(SingleStoreTable.class);
-    SingleStoreTable(JdbcTemplate jdbcTemplate, SingleStoreDatabase database, SingleStoreSchema schema, String name) {
+    private static final Log LOG = LogFactory.getLog(MemSQLTable.class);
+    MemSQLTable(JdbcTemplate jdbcTemplate, MemSQLDatabase database, MemSQLSchema schema, String name) {
         super(jdbcTemplate, database, schema, name);
     }
 
@@ -42,7 +42,7 @@ public class SingleStoreTable extends Table<SingleStoreDatabase, SingleStoreSche
     @Override
     protected void doLock() throws SQLException {
         if (jdbcTemplate.queryForString("select storage_type from information_schema.tables where table_schema=? and table_name=?", schema.getName(), name).equals("COLUMNSTORE")) {
-            LOG.warn("Taking lock on columnstore table is not supported by SingleStoreDB");
+            LOG.warn("Taking lock on columnstore table is not supported by MemSQL");
         } else {
             jdbcTemplate.execute("SELECT * FROM " + this + " FOR UPDATE");
         }

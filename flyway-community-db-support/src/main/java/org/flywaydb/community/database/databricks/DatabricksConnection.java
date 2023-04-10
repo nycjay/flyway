@@ -31,48 +31,14 @@ import java.util.List;
 public class DatabricksConnection extends Connection<DatabricksDatabase> {
 
     private static final Log LOG = LogFactory.getLog(DatabricksConnection.class);
-    public static String DEFAULT_SCHEMA = "default";
-    public static String DEFAULT_CATALOG = "hive_metastore";
     protected DatabricksConnection(DatabricksDatabase database, java.sql.Connection connection) {
         super(database, connection);
-        String catalogNameFromConfig = database.getConfiguration().getDefaultCatalog();
-        String currentCatalogName = (catalogNameFromConfig != null) ? catalogNameFromConfig : DEFAULT_CATALOG;
-        if (DEFAULT_CATALOG.equals(currentCatalogName)) {
-            LOG.info("The defaultCatalog was not specified in the config, so calling back to the default catalog, " + DEFAULT_CATALOG);
-        }
-        setCatalog(currentCatalogName);
-    }
-
-    /**
-     * Until the Databricks driver supports setting the catalog as part of the URL,
-     * let's manually set it here on the connection. This is not ideal, but it works well enough, as long as you only
-     * work with one catalog for your environment.
-     * @param catalog
-     */
-    protected void setCatalog(String catalog) {
-        LOG.info("=====Setting the current catalog to " + catalog);
-        try {
-            //jdbcTemplate.getConnection().setCatalog(catalogName);
-            String sql = "USE CATALOG " + database.doQuote(catalog) + ";";
-            jdbcTemplate.execute(sql);
-            sql = "select current_catalog();";
-            Results results = jdbcTemplate.executeStatement(sql);
-            for (Result result : results.getResults()) {
-                for (List<String> row : result.getData()) {
-                    String catalogName = row.get(0);
-                    LOG.debug(String.format("The catalog is set to: %s", catalogName));
-                }
-            }
-        } catch (SQLException e) {
-            LOG.error("Something went wrong when trying to set the Databricks catalog to " + catalog +
-                    ", so using the default catalog " + DEFAULT_CATALOG + " instead.");
-        }
     }
 
     @Override
     protected String getCurrentSchemaNameOrSearchPath() throws SQLException {
         String currentSchema = jdbcTemplate.queryForString("SELECT current_database();");
-        return (currentSchema != null) ? currentSchema : DEFAULT_SCHEMA;
+        return currentSchema;
     }
 
     @Override

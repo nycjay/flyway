@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.flywaydb.community.database.SingleStore;
+package org.flywaydb.community.database.MemSQL;
 
 import org.flywaydb.core.internal.database.base.Schema;
 import org.flywaydb.core.internal.database.base.Table;
@@ -24,9 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class SingleStoreSchema extends Schema<SingleStoreDatabase, SingleStoreTable> {
+public class MemSQLSchema extends Schema<MemSQLDatabase, MemSQLTable> {
 
-    SingleStoreSchema(JdbcTemplate jdbcTemplate, SingleStoreDatabase database, String name) {
+    MemSQLSchema(JdbcTemplate jdbcTemplate, MemSQLDatabase database, String name) {
         super(jdbcTemplate, database, name);
     }
 
@@ -92,18 +92,18 @@ public class SingleStoreSchema extends Schema<SingleStoreDatabase, SingleStoreTa
     }
 
     @Override
-    protected SingleStoreTable[] doAllTables() throws SQLException {
+    protected MemSQLTable[] doAllTables() throws SQLException {
         List<String> tableNames = jdbcTemplate.queryForStringList("SELECT table_name FROM information_schema.tables WHERE table_schema=?", name);
 
-        SingleStoreTable[] tables = new SingleStoreTable[tableNames.size()];
+        MemSQLTable[] tables = new MemSQLTable[tableNames.size()];
         for (int i = 0; i < tableNames.size(); i++) {
-            tables[i] = new SingleStoreTable(jdbcTemplate, database, this, tableNames.get(i));
+            tables[i] = new MemSQLTable(jdbcTemplate, database, this, tableNames.get(i));
         }
         return tables;
     }
 
     @Override
     public Table getTable(String tableName) {
-        return new SingleStoreTable(jdbcTemplate, database, this, tableName);
+        return new MemSQLTable(jdbcTemplate, database, this, tableName);
     }
 }

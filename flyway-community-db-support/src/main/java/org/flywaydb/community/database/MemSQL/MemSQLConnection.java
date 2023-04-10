@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.flywaydb.community.database.SingleStore;
+package org.flywaydb.community.database.MemSQL;
 
 import org.flywaydb.core.api.logging.Log;
 import org.flywaydb.core.api.logging.LogFactory;
@@ -26,16 +26,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-public class SingleStoreConnection extends Connection<SingleStoreDatabase> {
+public class MemSQLConnection extends Connection<MemSQLDatabase> {
 
-    private static final Log LOG = LogFactory.getLog(SingleStoreConnection.class);
+    private static final Log LOG = LogFactory.getLog(MemSQLConnection.class);
     private static final String USER_VARIABLES_TABLE = "information_schema.user_variables";
     private static final String USER_VARIABLES_QUERY = "SELECT variable_name FROM "
             + USER_VARIABLES_TABLE
             + " WHERE variable_value IS NOT NULL";
     private final boolean canResetUserVariables;
 
-    public SingleStoreConnection(SingleStoreDatabase database, java.sql.Connection connection) {
+    public MemSQLConnection(MemSQLDatabase database, java.sql.Connection connection) {
         super(database, connection);
         canResetUserVariables = hasUserVariableResetCapability();
     }
@@ -91,12 +91,12 @@ public class SingleStoreConnection extends Connection<SingleStoreDatabase> {
     @Override
     protected Schema doGetCurrentSchema() throws SQLException {
         String schemaName = getCurrentSchemaNameOrSearchPath();
-        // SingleStore can have URLs where no current schema is set, so we must handle this case explicitly.
+        // MemSQL can have URLs where no current schema is set, so we must handle this case explicitly.
         return schemaName == null ? null : getSchema(schemaName);
     }
 
     @Override
     public Schema getSchema(String name) {
-        return new SingleStoreSchema(jdbcTemplate, database, name);
+        return new MemSQLSchema(jdbcTemplate, database, name);
     }
 }

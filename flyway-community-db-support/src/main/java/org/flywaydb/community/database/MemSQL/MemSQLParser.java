@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.flywaydb.community.database.SingleStore;
+package org.flywaydb.community.database.MemSQL;
 
 import org.flywaydb.core.api.configuration.Configuration;
 import org.flywaydb.core.internal.parser.*;
@@ -24,13 +24,13 @@ import java.util.regex.Pattern;
 
 import static java.lang.Character.isDigit;
 
-public class SingleStoreParser extends Parser {
+public class MemSQLParser extends Parser {
     private static final char ALTERNATIVE_SINGLE_LINE_COMMENT = '#';
 
     private static final Pattern STORED_PROGRAM_REGEX = Pattern.compile("^CREATE\\s(OR REPLACE\\s)?(FUNCTION|PROCEDURE|TEMPORARY PROCEDURE)", Pattern.CASE_INSENSITIVE);
     private static final StatementType STORED_PROGRAM_STATEMENT = new StatementType();
 
-    public SingleStoreParser(Configuration configuration, ParsingContext parsingContext) {
+    public MemSQLParser(Configuration configuration, ParsingContext parsingContext) {
         super(configuration, parsingContext, 8);
     }
 

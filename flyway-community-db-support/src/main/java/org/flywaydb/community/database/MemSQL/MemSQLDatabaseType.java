@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.flywaydb.community.database.SingleStore;
+package org.flywaydb.community.database.MemSQL;
 
 import org.flywaydb.core.api.ResourceProvider;
 import org.flywaydb.core.api.configuration.Configuration;
+import org.flywaydb.core.api.logging.Log;
+import org.flywaydb.core.api.logging.LogFactory;
 import org.flywaydb.core.internal.database.base.BaseDatabaseType;
 import org.flywaydb.core.internal.database.base.Database;
 import org.flywaydb.core.internal.jdbc.JdbcConnectionFactory;
@@ -27,14 +29,19 @@ import org.flywaydb.core.internal.parser.ParsingContext;
 
 import java.sql.Connection;
 import java.sql.Types;
-import java.util.Arrays;
 
-public class SingleStoreDatabaseType extends BaseDatabaseType {
+public class MemSQLDatabaseType extends BaseDatabaseType {
+
+    private static final Log LOG = LogFactory.getLog(MemSQLDatabaseType.class);
     @Override
     public String getName() {
-        return "SingleStoreDB";
+        return "memsql";
     }
-
+    @Override
+    public int getPriority() {
+        // MemSQL needs to be checked in advance of MySql
+        return 1;
+    }
     @Override
     public int getNullType() {
         return Types.VARCHAR;
@@ -57,17 +64,17 @@ public class SingleStoreDatabaseType extends BaseDatabaseType {
 
     @Override
     public boolean handlesDatabaseProductNameAndVersion(String databaseProductName, String databaseProductVersion, Connection connection) {
-        return (databaseProductName.contains("SingleStore") || (databaseProductName.contains("MySQL") && JdbcUtils.getCatalog(connection).contains("memsql")));
+        return ((databaseProductName.contains("MySQL") && JdbcUtils.getCatalog(connection).contains("memsql")) || databaseProductName.contains("SingleStore"));
     }
 
     @Override
     public Database createDatabase(Configuration configuration, JdbcConnectionFactory jdbcConnectionFactory, StatementInterceptor statementInterceptor) {
-        return new SingleStoreDatabase(configuration, jdbcConnectionFactory, statementInterceptor);
+        return new MemSQLDatabase(configuration, jdbcConnectionFactory, statementInterceptor);
     }
 
     @Override
     public Parser createParser(Configuration configuration, ResourceProvider resourceProvider, ParsingContext parsingContext) {
-        return new SingleStoreParser(configuration, parsingContext);
+        return new MemSQLParser(configuration, parsingContext);
     }
 
     @Override
