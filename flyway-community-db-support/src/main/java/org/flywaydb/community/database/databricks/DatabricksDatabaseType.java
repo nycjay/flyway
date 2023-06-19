@@ -54,6 +54,9 @@ public class DatabricksDatabaseType extends BaseDatabaseType {
     }
 
     @Override
+    public boolean driverSupportsAdditionalProperties() { return false; }
+
+    @Override
     public String getBackupDriverClass(String url, ClassLoader classLoader) {
         if (ClassUtils.isPresent(DATABRICKS_JDBC41_DRIVER, classLoader)) {
             return DATABRICKS_JDBC41_DRIVER;

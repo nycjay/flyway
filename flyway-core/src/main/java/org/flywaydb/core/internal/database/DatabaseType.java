@@ -257,4 +257,6 @@ public interface DatabaseType extends Plugin {
 
     boolean supportsResultsExtraction();
 
+    boolean driverSupportsAdditionalProperties();
+
 }

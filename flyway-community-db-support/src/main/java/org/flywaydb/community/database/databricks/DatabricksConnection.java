@@ -37,8 +37,7 @@ public class DatabricksConnection extends Connection<DatabricksDatabase> {
 
     @Override
     protected String getCurrentSchemaNameOrSearchPath() throws SQLException {
-        String currentSchema = jdbcTemplate.queryForString("SELECT current_database();");
-        return currentSchema;
+        return jdbcTemplate.queryForString("SELECT current_database();");
     }
 
     @Override

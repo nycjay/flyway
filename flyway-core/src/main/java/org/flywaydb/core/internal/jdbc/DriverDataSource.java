@@ -246,7 +246,12 @@ public class DriverDataSource implements DataSource {
      */
     protected Connection getConnectionFromDriver(String username, String password) throws SQLException {
         Properties properties = new Properties(this.defaultProperties);
-        properties.putAll(additionalProperties);
+
+        if(type.driverSupportsAdditionalProperties()) {
+            properties.putAll(additionalProperties);
+        } else {
+            //no-op
+        }
 
         if (username != null) {
             properties.setProperty("user", username);

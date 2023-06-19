@@ -256,4 +256,6 @@ public abstract class BaseDatabaseType implements DatabaseType {
     public boolean supportsResultsExtraction() {
         return true;
     }
+
+    public boolean driverSupportsAdditionalProperties() { return true; }
 }
